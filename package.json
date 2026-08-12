@@ -1,0 +1,12 @@
+{
+  "name": "ecog-and-outcomes",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @ecog/web",
+    "build": "npm run build -w @ecog/web",
+    "preview": "npm run preview -w @ecog/web"
+  }
+}

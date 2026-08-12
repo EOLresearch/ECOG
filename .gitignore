@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+.npm/
+
+# Builds
+dist/
+build/
+apps/web/dist/
+apps/api/dist/
+*.zip
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+*.pem
+
+# Terraform
+infra/.terraform/
+infra/*.tfstate
+infra/*.tfstate.*
+infra/crash.log
+infra/crash.*.log
+infra/*.tfvars
+!infra/*.tfvars.example
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs / coverage
+logs/
+*.log
+coverage/
+.nyc_output/
