@@ -78,6 +78,12 @@ export const DEMO_EXPECTATION_OPTIONS = [
   { value: 'unsure', label: 'I am not sure' },
 ] as const
 
+/** Matches REDCap field sarcf0 on sarcf_screen_for_sarcopenia. */
+export const DEMO_SARCF_REPORTER_OPTIONS = [
+  { value: 'patient', label: 'Patient report' },
+  { value: 'caregiver', label: 'Caregiver report' },
+] as const
+
 /** DEMO ONLY — illustrative SARC-F-style items; confirm study instrument (D2). */
 export const DEMO_SARCF_ITEMS = [
   {

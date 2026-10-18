@@ -2,6 +2,7 @@ export type Responses = {
   studyId: string
   ecog: number | null
   expectationsChanged: string | null
+  reportedBy: string | null
   sarcf: Record<string, number | null>
   baseline: Record<string, string | null>
 }
@@ -11,6 +12,7 @@ export function emptyResponses(): Responses {
     studyId: '',
     ecog: null,
     expectationsChanged: null,
+    reportedBy: null,
     sarcf: {},
     baseline: {},
   }

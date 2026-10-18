@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { submitResponses } from './api'
 import { ChoiceCard, NavButtons, Shell } from './components/ui'
 import {
   DEMO_BASELINE_ITEMS,
@@ -7,6 +8,7 @@ import {
   DEMO_GUIDANCE,
   DEMO_SARCF_ITEMS,
   DEMO_SARCF_OPTIONS,
+  DEMO_SARCF_REPORTER_OPTIONS,
   STEPS,
   STEP_LABELS,
   type StepId,
@@ -26,8 +28,10 @@ export default function App() {
       : DEMO_GUIDANCE[guidanceBucket(responses.ecog)]
 
   const sarcfComplete = useMemo(
-    () => DEMO_SARCF_ITEMS.every((item) => responses.sarcf[item.id] != null),
-    [responses.sarcf],
+    () =>
+      responses.reportedBy != null &&
+      DEMO_SARCF_ITEMS.every((item) => responses.sarcf[item.id] != null),
+    [responses.reportedBy, responses.sarcf],
   )
 
   const baselineComplete = useMemo(
@@ -40,16 +44,22 @@ export default function App() {
     if (next) setStep(next)
   }
 
-  async function mockSubmit() {
+  async function submit() {
     setSubmitting(true)
     setSubmitNote(null)
-    // Demo only — no REDCap call
-    await new Promise((r) => setTimeout(r, 900))
-    setSubmitting(false)
-    setSubmitNote(
-      'Demo save simulated. In production this posts to the API → REDCap.',
-    )
-    setStep('complete')
+    try {
+      const result = await submitResponses(responses)
+      setSubmitNote(
+        `Saved to local demo API (not REDCap). Record ${result.id}.`,
+      )
+      setStep('complete')
+    } catch (err) {
+      setSubmitNote(
+        err instanceof Error ? `Save failed: ${err.message}` : 'Save failed.',
+      )
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   function restart() {
@@ -71,7 +81,7 @@ export default function App() {
         submitting,
         onBack: () => go(-1),
         onNext: () => go(1),
-        onSubmit: mockSubmit,
+        onSubmit: submit,
         onRestart: restart,
       })}
     >
@@ -146,6 +156,23 @@ export default function App() {
         <section className="stack">
           <p className="lede">Answer each item about the patient.</p>
           <p className="callout">Illustrative SARC-F-style items — confirm instrument (D2).</p>
+          <fieldset className="item-block">
+            <legend>Who is completing this assessment?</legend>
+            <div className="chip-row">
+              {DEMO_SARCF_REPORTER_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  className={`chip ${responses.reportedBy === opt.value ? 'is-selected' : ''}`}
+                  onClick={() =>
+                    setResponses((r) => ({ ...r, reportedBy: opt.value }))
+                  }
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </fieldset>
           {DEMO_SARCF_ITEMS.map((item) => (
             <fieldset key={item.id} className="item-block">
               <legend>{item.prompt}</legend>
